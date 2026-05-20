@@ -1,11 +1,155 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>מאור | לידים לעסקים קטנים</title>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מאור | לידים לעסקים קטנים</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Rubik', sans-serif;
+      background: #f7f8fb;
+      color: #1f2937;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      padding: 32px;
+      border-radius: 24px;
+      background: #ffffff;
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    p {
+      margin: 0 0 24px;
+      text-align: center;
+      color: #4b5563;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      border: 1px solid #d1d5db;
+      border-radius: 14px;
+      font-size: 0.98rem;
+      background: #f9fafb;
+      direction: rtl;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px 18px;
+      border: none;
+      border-radius: 14px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    #success {
+      display: none;
+      text-align: center;
+      padding: 28px 16px;
+      border-radius: 20px;
+      background: #ecfdf5;
+      color: #065f46;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>השאר פרטי קשר</h1>
+    <p>אנא מלא את הפרטים ונחזור אליך בהקדם עם הצעת לידים מותאמת לעסק שלך.</p>
+
+    <form id="lead-form" onsubmit="submitLead(event)">
+      <div id="form-fields">
+        <label for="name">שם מלא</label>
+        <input type="text" id="name" name="name" placeholder="שם" required>
+
+        <label for="phone">טלפון</label>
+        <input type="tel" id="phone" name="phone" placeholder="05X-XXXXXXX" required>
+
+        <label for="business">שם העסק / תחום</label>
+        <input type="text" id="business" name="business" placeholder="שם העסק או התחום" required>
+
+        <label for="notes">הערות נוספות</label>
+        <textarea id="notes" name="notes" placeholder="מה חשוב שידעו על העסק שלך?" rows="5"></textarea>
+
+        <button type="submit">שלח פנייה</button>
+      </div>
+    </form>
+
+    <div id="success">
+      <h2>תודה!</h2>
+      <p>הפנייה נשלחה בהצלחה. ניצור איתך קשר בקרוב.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    emailjs.init("cKWF3k5--EFenLoM6");
+
+    function submitLead(event) {
+      event.preventDefault();
+
+      const nameInput = document.querySelector('input[placeholder*="ישראלי"]') || document.querySelector('input[placeholder*="שם"]');
+      const phoneInput = document.querySelector('input[placeholder*="05"]') || document.querySelector('input[placeholder*="טלפון"]');
+      const businessSelect = document.querySelector('select') || document.querySelector('input[placeholder*="עסק"]');
+      const notesTextarea = document.querySelector('textarea');
+
+      const templateParams = {
+        name: nameInput ? nameInput.value : '',
+        phone: phoneInput ? phoneInput.value : '',
+        business: businessSelect ? businessSelect.value : '',
+        notes: notesTextarea ? notesTextarea.value : ''
+      };
+
+      emailjs.send('service_lowtlws', 'template_u9wpz5c', templateParams)
+        .then(function(response) {
+          alert('הפנייה נשלחה בהצלחה!');
+          const formFields = document.getElementById('form-fields');
+          if (formFields) formFields.style.display = 'none';
+          const successMessage = document.getElementById('success');
+          if (successMessage) successMessage.style.display = 'block';
+        }, function(error) {
+          alert('שגיאה בשליחה, נסה שוב מאוחר יותר.');
+          console.error('Error:', error);
+        });
+    }
+  </script>
 </body>
 </html>
